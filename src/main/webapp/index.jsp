@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <!doctype html>
 <html lang="en">
     <head>
@@ -21,10 +22,10 @@
             <div class="row">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/offers.do">Вакансии</a>
+                        <a class="nav-link" href="<c:url value="/offers.do"/>">Вакансии</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Кандидаты</a>
+                        <a class="nav-link" href="<c:url value="/candidates.do"/>">Кандидаты</a>
                     </li>
                 </ul>
             </div>

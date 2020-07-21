@@ -1,7 +1,6 @@
-<%@ page import="model.Candidate" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <html>
     <head>
         <!-- Required meta tags -->
@@ -18,11 +17,11 @@
     </head>
     <body>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Назад</a>
+            <a class="nav-link" href="<c:url value="/index.do"/>">Назад</a>
             <div class="card">
                 <div class="card-header">Кандидаты</div>
                 <div class="card-body">
-                    <a class="nav-link" href="<%=request.getContextPath()%>/candidate_edit.do">Добавить</a>
+                    <a class="nav-link" href="<c:url value="/candidate_edit.do"/>">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -33,14 +32,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (Candidate candidate : (Collection<Candidate>) request.getAttribute("candidates")) { %>
-                                <tr onclick="window.location='<%=request.getContextPath()%>/candidate_edit.do?id=<%=candidate.getId()%>'">
-                                    <td><%= candidate.getId() %></td>
-                                    <td><%= new SimpleDateFormat("dd-MM-yyyy").format(candidate.getDate()) %></td>
-                                    <td><%= candidate.getName() %></td>
-                                    <td><%= candidate.getDescription() %></td>
+                            <c:forEach items="${candidates}" var="candidate">
+                                <tr onclick="window.location='<c:url value="/candidate_edit.do?id=${candidate.id}"/>'">
+                                    <td><c:out value="${candidate.id}"/></td>
+                                    <td><fmt:formatDate pattern="dd-MM-yyyy" type="date" value="${candidate.date}"/></td>
+                                    <td><c:out value="${candidate.name}"/></td>
+                                    <td><c:out value="${candidate.description}"/></td>
                                 </tr>
-                            <% } %>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>

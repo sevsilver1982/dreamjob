@@ -1,6 +1,6 @@
-<%@ page import="model.Offer" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <html>
     <head>
         <!-- Required meta tags -->
@@ -15,37 +15,35 @@
         <title>Работа мечты</title>
     </head>
     <body>
-        <%Offer offer = (Offer) request.getAttribute("offer");%>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/offers.do">Назад</a>
+            <a class="nav-link" href="<c:url value="/offers.do"/>">Назад</a>
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        <% if (offer.getId() == 0) { %>
-                        Новая вакансия
-                        <% } else { %>
-                        Редактирование вакансии
-                        <% } %>
+                        <c:choose>
+                            <c:when test="${offer.id == 0}">Новая вакансия</c:when>
+                            <c:otherwise>Редактирование вакансии</c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="card-body">
-                        <form action="<%=request.getContextPath()%>/offers.do?id=<%=offer.getId()%>" method="post">
+                        <form action="<c:url value="/offers.do?id=${offer.id}"/>" method="post">
                             <div class="form-group">
                                 <div class="form-group">
                                     <label>Тема</label>
-                                    <input type="text" class="form-control" name="name" value="<%=offer.getName()%>">
+                                    <input type="text" class="form-control" name="name" value="<c:out value="${offer.name}"/>">
                                 </div>
                                 <div class="form-group">
                                     <label>Автор</label>
-                                    <input type="text" class="form-control" name="author" value="<%=offer.getAuthor()%>">
+                                    <input type="text" class="form-control" name="author" value="<c:out value="${offer.author}"/>">
                                 </div>
                                 <div class="form-group">
                                     <label>Дата</label>
-                                    <input type="date" class="form-control" name="date" value="<%=new SimpleDateFormat("yyyy-MM-dd").format(offer.getDate())%>">
+                                    <input type="date" class="form-control" name="date" value="<fmt:formatDate pattern="yyyy-MM-dd" type="date" value="${offer.date}"/>">
                                 </div>
                                 <div class="form-group">
                                     <label>Описание</label>
                                 </div>
-                                <textarea class="form-control" rows="10" name="text"  ><%=offer.getText()%></textarea>
+                                <textarea class="form-control" rows="10" name="text" ><c:out value="${offer.text}"/></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Сохранить</button>
                         </form>

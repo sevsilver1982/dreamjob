@@ -1,7 +1,6 @@
-<%@ page import="model.Offer" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <html>
     <head>
         <!-- Required meta tags -->
@@ -18,11 +17,11 @@
     </head>
     <body>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Назад</a>
+            <a class="nav-link" href="<c:url value="/index.do"/>">Назад</a>
             <div class="card">
                 <div class="card-header">Вакансии</div>
                 <div class="card-body">
-                    <a class="nav-link" href="<%=request.getContextPath()%>/offer_edit.do">Добавить</a>
+                    <a class="nav-link" href="<c:url value="/offer_edit.do"/>">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -33,14 +32,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (Offer offer : (Collection<Offer>) request.getAttribute("offers")) { %>
-                                <tr onclick="window.location='<%=request.getContextPath()%>/offer_edit.do?id=<%=offer.getId()%>'">
-                                    <td><%= offer.getId() %></td>
-                                    <td><%= offer.getName() %></td>
-                                    <td><%= offer.getAuthor() %></td>
-                                    <td><%= new SimpleDateFormat("dd-MM-yyyy").format(offer.getDate()) %></td>
+                            <c:forEach items="${offers}" var="offer">
+                                <tr onclick="window.location='<c:url value="/offer_edit.do?id=${offer.id}"/>'">
+                                    <td><c:out value="${offer.id}"/></td>
+                                    <td><c:out value="${offer.name}"/></td>
+                                    <td><c:out value="${offer.author}"/></td>
+                                    <td><fmt:formatDate pattern="dd-MM-yyyy" type="date" value="${offer.date}"/></td>
                                 </tr>
-                            <% } %>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>

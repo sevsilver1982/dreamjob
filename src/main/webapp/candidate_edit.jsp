@@ -1,6 +1,6 @@
-<%@ page import="model.Candidate" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <html>
     <head>
         <!-- Required meta tags -->
@@ -15,32 +15,30 @@
         <title>Работа мечты</title>
     </head>
     <body>
-        <%Candidate candidate = (Candidate) request.getAttribute("candidate");%>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Назад</a>
+            <a class="nav-link" href="<c:url value="/candidates.do"/>">Назад</a>
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        <% if (candidate.getId() == 0) { %>
-                        Новый кандидат
-                        <% } else { %>
-                        Редактирование кандидата
-                        <% } %>
+                        <c:choose>
+                            <c:when test="${candidate.id == 0}">Новый кандидат</c:when>
+                            <c:otherwise>Редактирование кандидата</c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="card-body">
-                        <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candidate.getId()%>" method="post">
+                        <form action="<c:url value="/candidates.do?id=${candidate.id}"/>" method="post">
                             <div class="form-group">
                                 <div class="form-group">
                                     <label>Имя</label>
-                                    <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>">
+                                    <input type="text" class="form-control" name="name" value="<c:out value="${candidate.name}"/>">
                                 </div>
                                 <div class="form-group">
                                     <label>Описание</label>
-                                    <input type="text" class="form-control" name="description" value="<%=candidate.getDescription()%>">
+                                    <input type="text" class="form-control" name="description" value="<c:out value="${candidate.description}"/>">
                                 </div>
                                 <div class="form-group">
                                     <label>Дата</label>
-                                    <input type="date" class="form-control" name="date" value="<%=new SimpleDateFormat("yyyy-MM-dd").format(candidate.getDate())%>">
+                                    <input type="date" class="form-control" name="date" value="<fmt:formatDate pattern="yyyy-MM-dd" type="date" value="${candidate.date}"/>">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Сохранить</button>
