@@ -1,4 +1,6 @@
-package model;
+package store;
+
+import model.ItemImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

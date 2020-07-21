@@ -1,4 +1,6 @@
-package model;
+package store;
+
+import model.Candidate;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,35 +9,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class OfferStore extends StorePLSQL<Offer> {
-    private static final OfferStore INSTANCE = new OfferStore();
+public class CandidateStore extends StorePLSQL<Candidate> {
+    private static final CandidateStore INSTANCE = new CandidateStore();
 
-    public static OfferStore getInstance() {
+    public static CandidateStore getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public Offer add(Offer item) {
+    public Candidate add(Candidate item) {
         if (item.getId() == 0) {
-            try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("INSERT INTO offers (date, name, author, text) VALUES (?, ?, ?, ?)")
+            try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("INSERT INTO candidates (date, name, description) VALUES (?, ?, ?)")
             ) {
                 int i = 1;
                 preparedStatement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
                 preparedStatement.setString(i++, item.getName());
-                preparedStatement.setString(i++, item.getAuthor());
-                preparedStatement.setString(i, item.getText());
+                preparedStatement.setString(i++, item.getDescription());
                 int rowsAffected = preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("UPDATE offers SET date = ?, name = ?, author = ?, text = ? WHERE id = ?")
+            try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("UPDATE candidates SET date = ?, name = ?, description = ? WHERE id = ?")
             ) {
                 int i = 1;
                 preparedStatement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
                 preparedStatement.setString(i++, item.getName());
-                preparedStatement.setString(i++, item.getAuthor());
-                preparedStatement.setString(i++, item.getText());
+                preparedStatement.setString(i++, item.getDescription());
                 preparedStatement.setInt(i, item.getId());
                 int rowsAffected = preparedStatement.executeUpdate();
             } catch (SQLException e) {
@@ -46,47 +46,45 @@ public class OfferStore extends StorePLSQL<Offer> {
     }
 
     @Override
-    public Collection<Offer> findAll() {
-        List<Offer> offers = new ArrayList<>();
-        try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("SELECT * FROM offers ORDER BY date DESC");
+    public Collection<Candidate> findAll() {
+        List<Candidate> candidates = new ArrayList<>();
+        try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("SELECT * FROM candidates ORDER BY date DESC");
              ResultSet resultSet = preparedStatement.executeQuery()
         ) {
             while (resultSet.next()) {
-                offers.add(new Offer().builder()
+                candidates.add(new Candidate().builder()
                         .setId(resultSet.getInt("id"))
                         .setDate(resultSet.getDate("date"))
                         .setName(resultSet.getString("name"))
-                        .setAuthor(resultSet.getString("author"))
-                        .setText(resultSet.getString("text"))
+                        .setDescription(resultSet.getString("description"))
                         .build()
                 );
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return offers;
+        return candidates;
     }
 
     @Override
-    public Offer findById(int id) {
-        Offer offer = new Offer();
-        try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("SELECT * FROM offers WHERE id = ?")) {
+    public Candidate findById(int id) {
+        Candidate candidate = new Candidate();
+        try (PreparedStatement preparedStatement = super.getConnection().prepareStatement("SELECT * FROM candidates WHERE id = ?")) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                offer = new Offer().builder()
+                candidate = new Candidate().builder()
                         .setId(resultSet.getInt("id"))
                         .setDate(resultSet.getDate("date"))
                         .setName(resultSet.getString("name"))
-                        .setAuthor(resultSet.getString("author"))
-                        .setText(resultSet.getString("text"))
+                        .setDescription(resultSet.getString("description"))
                         .build();
             }
             resultSet.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return offer;
+        return candidate;
     }
 
 }

@@ -1,6 +1,6 @@
 <%@ page import="model.Offer" %>
-<%@ page import="model.OfferStore" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
@@ -18,11 +18,11 @@
     </head>
     <body>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/index.jsp">Назад</a>
+            <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Назад</a>
             <div class="card">
                 <div class="card-header">Вакансии</div>
                 <div class="card-body">
-                    <a class="nav-link" href="<%=request.getContextPath()%>/offerEdit.jsp">Добавить</a>
+                    <a class="nav-link" href="<%=request.getContextPath()%>/offer_edit.do">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -33,8 +33,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (Offer offer : OfferStore.getInstance().findAll()) { %>
-                                <tr onclick="window.location='<%=request.getContextPath()%>/offerEdit.jsp?id=<%=offer.getId()%>'">
+                            <% for (Offer offer : (Collection<Offer>) request.getAttribute("offers")) { %>
+                                <tr onclick="window.location='<%=request.getContextPath()%>/offer_edit.do?id=<%=offer.getId()%>'">
                                     <td><%= offer.getId() %></td>
                                     <td><%= offer.getName() %></td>
                                     <td><%= offer.getAuthor() %></td>

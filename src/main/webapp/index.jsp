@@ -21,10 +21,10 @@
             <div class="row">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/offer.jsp">Вакансии</a>
+                        <a class="nav-link" href="<%=request.getContextPath()%>/offers.do">Вакансии</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/candidates.jsp">Кандидаты</a>
+                        <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Кандидаты</a>
                     </li>
                 </ul>
             </div>

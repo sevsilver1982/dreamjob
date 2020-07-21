@@ -1,7 +1,5 @@
 <%@ page import="model.Candidate" %>
-<%@ page import="model.CandidateStore" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Calendar" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
@@ -15,34 +13,22 @@
 
         <!-- Title -->
         <title>Работа мечты</title>
-
     </head>
     <body>
-        <%
-            String id = request.getParameter("id");
-            Candidate candidate;
-            if (id != null) {
-                candidate = CandidateStore.getInstance().findById(Integer.parseInt(id));
-            } else {
-                candidate = new Candidate()
-                        .builder()
-                        .setDate(Calendar.getInstance().getTime())
-                        .build();
-            }
-        %>
+        <%Candidate candidate = (Candidate) request.getAttribute("candidate");%>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/candidates.jsp">Назад</a>
+            <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Назад</a>
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        <% if (id == null) { %>
+                        <% if (candidate.getId() == 0) { %>
                         Новый кандидат
                         <% } else { %>
                         Редактирование кандидата
                         <% } %>
                     </div>
                     <div class="card-body">
-                        <form action="<%=request.getContextPath()%>/candidate/save?id=<%=candidate.getId()%>" method="post">
+                        <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candidate.getId()%>" method="post">
                             <div class="form-group">
                                 <div class="form-group">
                                     <label>Имя</label>

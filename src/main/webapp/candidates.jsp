@@ -1,6 +1,6 @@
 <%@ page import="model.Candidate" %>
-<%@ page import="model.CandidateStore" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
@@ -18,11 +18,11 @@
     </head>
     <body>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/index.jsp">Назад</a>
+            <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Назад</a>
             <div class="card">
                 <div class="card-header">Кандидаты</div>
                 <div class="card-body">
-                    <a class="nav-link" href="<%=request.getContextPath()%>/candidateEdit.jsp">Добавить</a>
+                    <a class="nav-link" href="<%=request.getContextPath()%>/candidate_edit.do">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -33,8 +33,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (Candidate candidate : CandidateStore.getInstance().findAll()) { %>
-                                <tr onclick="window.location='<%=request.getContextPath()%>/candidateEdit.jsp?id=<%=candidate.getId()%>'">
+                            <% for (Candidate candidate : (Collection<Candidate>) request.getAttribute("candidates")) { %>
+                                <tr onclick="window.location='<%=request.getContextPath()%>/candidate_edit.do?id=<%=candidate.getId()%>'">
                                     <td><%= candidate.getId() %></td>
                                     <td><%= new SimpleDateFormat("dd-MM-yyyy").format(candidate.getDate()) %></td>
                                     <td><%= candidate.getName() %></td>

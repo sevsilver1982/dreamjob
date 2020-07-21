@@ -1,7 +1,5 @@
 <%@ page import="model.Offer" %>
-<%@ page import="model.OfferStore" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Calendar" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
@@ -15,34 +13,22 @@
 
         <!-- Title -->
         <title>Работа мечты</title>
-
     </head>
     <body>
-        <%
-            String id = request.getParameter("id");
-            Offer offer;
-            if (id != null) {
-                offer = OfferStore.getInstance().findById(Integer.parseInt(id));
-            } else {
-                offer = new Offer()
-                        .builder()
-                        .setDate(Calendar.getInstance().getTime())
-                        .build();
-            }
-        %>
+        <%Offer offer = (Offer) request.getAttribute("offer");%>
         <div class="container pt-5">
-            <a class="nav-link" href="<%=request.getContextPath()%>/offer.jsp">Назад</a>
+            <a class="nav-link" href="<%=request.getContextPath()%>/offers.do">Назад</a>
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        <% if (id == null) { %>
+                        <% if (offer.getId() == 0) { %>
                         Новая вакансия
                         <% } else { %>
                         Редактирование вакансии
                         <% } %>
                     </div>
                     <div class="card-body">
-                        <form action="<%=request.getContextPath()%>/offer/save?id=<%=offer.getId()%>" method="post">
+                        <form action="<%=request.getContextPath()%>/offers.do?id=<%=offer.getId()%>" method="post">
                             <div class="form-group">
                                 <div class="form-group">
                                     <label>Тема</label>
