@@ -5,44 +5,67 @@
 <web-app>
   <display-name>Dream job</display-name>
   <servlet>
-    <servlet-name>OfferServlet</servlet-name>
-    <servlet-class>servlet.OfferServlet</servlet-class>
+    <servlet-name>ServletOffer</servlet-name>
+    <servlet-class>servlets.ServletOffer</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>OfferEditServlet</servlet-name>
-    <servlet-class>servlet.OfferEditServlet</servlet-class>
+    <servlet-name>ServletOfferEdit</servlet-name>
+    <servlet-class>servlets.ServletOfferEdit</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>CandidateServlet</servlet-name>
-    <servlet-class>servlet.CandidateServlet</servlet-class>
+    <servlet-name>ServletOfferDelete</servlet-name>
+    <servlet-class>servlets.ServletOfferDelete</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>CandidateEditServlet</servlet-name>
-    <servlet-class>servlet.CandidateEditServlet</servlet-class>
+    <servlet-name>ServletCandidate</servlet-name>
+    <servlet-class>servlets.ServletCandidate</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>IndexServlet</servlet-name>
-    <servlet-class>servlet.IndexServlet</servlet-class>
+    <servlet-name>ServletCandidateEdit</servlet-name>
+    <servlet-class>servlets.ServletCandidateEdit</servlet-class>
   </servlet>
-
+  <servlet>
+    <servlet-name>ServletCandidatePhoto</servlet-name>
+    <servlet-class>servlets.ServletCandidatePhoto</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ServletCandidateDelete</servlet-name>
+    <servlet-class>servlets.ServletCandidateDelete</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ServletIndex</servlet-name>
+    <servlet-class>servlets.ServletIndex</servlet-class>
+  </servlet>
   <servlet-mapping>
-    <servlet-name>OfferServlet</servlet-name>
+    <servlet-name>ServletOffer</servlet-name>
     <url-pattern>/offers.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>OfferEditServlet</servlet-name>
-    <url-pattern>/offer_edit.do</url-pattern>
+    <servlet-name>ServletOfferEdit</servlet-name>
+    <url-pattern>/offer_edit</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>CandidateServlet</servlet-name>
+    <servlet-name>ServletOfferDelete</servlet-name>
+    <url-pattern>/offer_delete</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServletCandidate</servlet-name>
     <url-pattern>/candidates.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>CandidateEditServlet</servlet-name>
-    <url-pattern>/candidate_edit.do</url-pattern>
+    <servlet-name>ServletCandidateEdit</servlet-name>
+    <url-pattern>/candidate_edit</url-pattern>
   </servlet-mapping>
-    <servlet-mapping>
-    <servlet-name>IndexServlet</servlet-name>
-  <url-pattern>/index.do</url-pattern>
+  <servlet-mapping>
+    <servlet-name>ServletCandidatePhoto</servlet-name>
+    <url-pattern>/candidate_photo</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServletCandidateDelete</servlet-name>
+    <url-pattern>/candidate_delete</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServletIndex</servlet-name>
+    <url-pattern>/index.do</url-pattern>
   </servlet-mapping>
 </web-app>

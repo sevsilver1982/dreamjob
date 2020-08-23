@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public abstract class StorePLSQL<T extends ItemImpl> implements StoreImpl<T>, AutoCloseable {
+public abstract class StoreDBImpl<T extends ItemImpl> implements Store<T>, AutoCloseable {
     private static final String APP_PROPERTIES = "app.properties";
     public static final String PROPERTY_JDBC_DRIVER = "jdbc.driver";
     public static final String PROPERTY_JDBC_URL = "jdbc.url";
@@ -17,10 +17,10 @@ public abstract class StorePLSQL<T extends ItemImpl> implements StoreImpl<T>, Au
     private final Properties properties;
     private final Connection connection;
 
-    public StorePLSQL() {
+    public StoreDBImpl() {
         properties = new Properties();
         try {
-            properties.load(StorePLSQL.class.getClassLoader().getResourceAsStream(APP_PROPERTIES));
+            properties.load(StoreDBImpl.class.getClassLoader().getResourceAsStream(APP_PROPERTIES));
             connection = connect(properties);
         } catch (Exception e) {
             throw new RuntimeException(e);

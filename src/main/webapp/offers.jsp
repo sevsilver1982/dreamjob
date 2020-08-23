@@ -16,12 +16,14 @@
         <title>Работа мечты</title>
     </head>
     <body>
-        <div class="container pt-5">
-            <a class="nav-link" href="<c:url value="/index.do"/>">Назад</a>
+        <div class="col-12 container">
+            <div class="row">
+                <a class="nav-link" href="<c:url value="/index.do"/>">Назад</a>
+            </div>
             <div class="card">
                 <div class="card-header">Вакансии</div>
                 <div class="card-body">
-                    <a class="nav-link" href="<c:url value="/offer_edit.do"/>">Добавить</a>
+                    <a class="card-link" href="<c:url value="/offer_edit"/>">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -33,7 +35,7 @@
                         </thead>
                         <tbody>
                             <c:forEach items="${offers}" var="offer">
-                                <tr onclick="window.location='<c:url value="/offer_edit.do?id=${offer.id}"/>'">
+                                <tr onclick="window.location='<c:url value="/offer_edit?id=${offer.id}"/>'">
                                     <td><c:out value="${offer.id}"/></td>
                                     <td><c:out value="${offer.name}"/></td>
                                     <td><c:out value="${offer.author}"/></td>

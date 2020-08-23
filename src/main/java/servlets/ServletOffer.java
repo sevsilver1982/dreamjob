@@ -1,7 +1,8 @@
-package servlet;
+package servlets;
 
-import model.Candidate;
-import store.CandidateStore;
+import model.Offer;
+import org.apache.log4j.Logger;
+import store.OfferStoreDBImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,31 +12,33 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class CandidateServlet extends HttpServlet {
+public class ServletOffer extends HttpServlet {
+    static Logger logger = Logger.getLogger(ServletOffer.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("candidates", CandidateStore.getInstance().findAll());
-        request.getRequestDispatcher("candidates.jsp").forward(request, response);
+        request.setAttribute("offers", OfferStoreDBImpl.getInstance().find());
+        request.getRequestDispatcher("offers.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         try {
-            CandidateStore.getInstance().add(
-                    new Candidate()
+            OfferStoreDBImpl.getInstance().add(
+                    new Offer()
                             .builder()
                             .setId(Integer.parseInt(request.getParameter("id")))
                             .setDate(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date")))
                             .setName(request.getParameter("name"))
-                            .setDescription(request.getParameter("description"))
+                            .setAuthor(request.getParameter("author"))
+                            .setText(request.getParameter("text"))
                             .build()
             );
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.debug(e.getStackTrace());
         }
-        response.sendRedirect(request.getContextPath() + "/candidates.do");
+        response.sendRedirect(request.getContextPath() + "/offers.do");
     }
 
 }

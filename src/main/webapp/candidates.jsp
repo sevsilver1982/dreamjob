@@ -16,12 +16,14 @@
         <title>Работа мечты</title>
     </head>
     <body>
-        <div class="container pt-5">
-            <a class="nav-link" href="<c:url value="/index.do"/>">Назад</a>
+        <div class="col-12 container">
+            <div class="row">
+                <a class="nav-link" href="<c:url value="/index.do"/>">Назад</a>
+            </div>
             <div class="card">
-                <div class="card-header">Кандидаты</div>
+                <div class="card-header">Анкеты кандидатов</div>
                 <div class="card-body">
-                    <a class="nav-link" href="<c:url value="/candidate_edit.do"/>">Добавить</a>
+                    <a class="card-link" href="<c:url value="/candidate_edit"/>">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -29,15 +31,19 @@
                                 <th scope="col">ФИО</th>
                                 <th scope="col">Описание</th>
                                 <th scope="col">Дата</th>
+                                <th scope="col">Фото</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach items="${candidates}" var="candidate">
-                                <tr onclick="window.location='<c:url value="/candidate_edit.do?id=${candidate.id}"/>'">
+                                <tr onclick="window.location='<c:url value="/candidate_edit?id=${candidate.id}"/>'">
                                     <td><c:out value="${candidate.id}"/></td>
                                     <td><fmt:formatDate pattern="dd-MM-yyyy" type="date" value="${candidate.date}"/></td>
                                     <td><c:out value="${candidate.name}"/></td>
                                     <td><c:out value="${candidate.description}"/></td>
+                                    <td align="center">
+                                        <img src="<c:url value="/candidate_photo?photoId=${candidate.photoId}"/>" height="30px"/>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>

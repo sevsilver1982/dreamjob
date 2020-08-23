@@ -89,16 +89,17 @@ public class Offer implements ItemImpl {
             return false;
         }
         Offer offer = (Offer) o;
-        return id == offer.id
-                && Objects.equals(date, offer.date)
-                && Objects.equals(name, offer.name)
-                && Objects.equals(author, offer.author)
-                && Objects.equals(text, offer.text);
+        return id == offer.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, name, author, text);
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Offer{id=%s, date=%s, name='%s', author='%s', text=%s}", id, date, author, text);
     }
 
 }

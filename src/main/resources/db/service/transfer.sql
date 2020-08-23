@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS dblink;
 DELETE FROM offers;
 INSERT INTO offers (date, name, author, text)
 SELECT * FROM
@@ -15,3 +16,5 @@ INSERT INTO candidates (date, name, description) VALUES (current_date, 'Гущи
 INSERT INTO candidates (date, name, description) VALUES (current_date, 'Капустин Мартын Гордеевич', 'Senior');
 INSERT INTO candidates (date, name, description) VALUES (current_date, 'Тихонов Нинель Вениаминович', 'Senior');
 INSERT INTO candidates (date, name, description) VALUES (current_date, 'Дьячков Родион Юлианович', 'Senior');
+
+DELETE FROM photo;
