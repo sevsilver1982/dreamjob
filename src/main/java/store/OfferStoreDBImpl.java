@@ -2,7 +2,6 @@ package store;
 
 import model.Offer;
 import org.apache.log4j.Logger;
-import servlets.ServletOfferEdit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

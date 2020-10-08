@@ -2,7 +2,6 @@ package store;
 
 import model.Candidate;
 import org.apache.log4j.Logger;
-import servlets.ServletCandidateDelete;
 
 import java.io.File;
 import java.io.FileOutputStream;

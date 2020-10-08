@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
     <head>
         <!-- Required meta tags -->
@@ -24,8 +24,13 @@
     </head>
     <body>
         <div class="col-4 container">
-            <div class="row">
-                <a class="nav-link" href="<c:url value="/candidates.do"/>">Назад</a>
+            <div style="display: flex; padding: 10px;">
+                <div style="display: flex; justify-content: flex-start; width: 70%;">
+                    <a class="nav-link" href="<%=request.getHeader("referer")%>">Назад</a>
+                </div>
+                <div style="display: flex; justify-content: flex-end; width: 30%;">
+                    <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp"> <c:out value="${user.name}"/> | Выйти</a>
+                </div>
             </div>
             <form action="<c:url value="/candidate_edit?id=${candidate.id}"/>" method="post" enctype="multipart/form-data">
                 <div class="card">

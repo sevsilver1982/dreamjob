@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
     <head>
@@ -19,30 +20,65 @@
     </head>
     <body>
         <div class="col-12 container">
-            <div class="row">
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="<c:url value="/offers.do"/>">Вакансии</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<c:url value="/candidates.do"/>">Анкеты кандидатов</a>
-                    </li>
-                </ul>
+            <div style="display: flex; padding: 10px;">
+                <div style="display: flex; justify-content: flex-start; width: 70%;">
+                    <a class="nav-link" href="<c:url value="/offers.do"/>">Вакансии</a>
+                    <a class="nav-link" href="<c:url value="/candidates.do"/>">Анкеты кандидатов</a>
+                </div>
+                <div style="display: flex; justify-content: flex-end; width: 30%;">
+                    <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp"> <c:out value="${user.name}"/> | Выйти</a>
+                </div>
             </div>
             <div class="card">
                 <div class="card-header">
                     Сегоднящние вакансии
                 </div>
-                <div class="card-body">
-                </div>
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Тема</th>
+                        <th scope="col">Автор</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${offers}" var="offer">
+                        <tr onclick="window.location='<c:url value="/offer_edit?id=${offer.id}"/>'">
+                            <td><c:out value="${offer.id}"/></td>
+                            <td><c:out value="${offer.name}"/></td>
+                            <td><c:out value="${offer.author}"/></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
             </div>
             <div class="container pt-3"></div>
             <div class="card">
                 <div class="card-header">
                     Сегоднящние анкеты кандидатов
                 </div>
-                <div class="card-body">
-                </div>
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ФИО</th>
+                        <th scope="col">Описание</th>
+                        <th scope="col">Фото</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${candidates}" var="candidate">
+                            <tr onclick="window.location='<c:url value="/candidate_edit?id=${candidate.id}"/>'">
+                                <td><c:out value="${candidate.id}"/></td>
+                                <td><c:out value="${candidate.name}"/></td>
+                                <td><c:out value="${candidate.description}"/></td>
+                                <td align="center">
+                                    <img src="<c:url value="/candidate_photo?photoId=${candidate.photoId}"/>" height="30px"/>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
     </body>
