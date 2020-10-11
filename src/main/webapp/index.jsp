@@ -43,7 +43,7 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${offers}" var="offer">
-                        <tr onclick="window.location='<c:url value="/offer_edit?id=${offer.id}"/>'">
+                        <tr onclick="window.location='<c:url value="/offer_edit.do?id=${offer.id}"/>'">
                             <td><c:out value="${offer.id}"/></td>
                             <td><c:out value="${offer.name}"/></td>
                             <td><c:out value="${offer.author}"/></td>
@@ -68,12 +68,12 @@
                     </thead>
                     <tbody>
                         <c:forEach items="${candidates}" var="candidate">
-                            <tr onclick="window.location='<c:url value="/candidate_edit?id=${candidate.id}"/>'">
+                            <tr onclick="window.location='<c:url value="/candidate_edit.do?id=${candidate.id}"/>'">
                                 <td><c:out value="${candidate.id}"/></td>
                                 <td><c:out value="${candidate.name}"/></td>
                                 <td><c:out value="${candidate.description}"/></td>
                                 <td align="center">
-                                    <img src="<c:url value="/candidate_photo?photoId=${candidate.photoId}"/>" height="30px"/>
+                                    <img src="<c:url value="/candidate_photo.do?photoId=${candidate.photoId}"/>" height="30px"/>
                                 </td>
                             </tr>
                         </c:forEach>

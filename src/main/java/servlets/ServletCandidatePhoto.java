@@ -13,6 +13,7 @@ import java.io.IOException;
 public class ServletCandidatePhoto extends HttpServlet {
     static Logger logger = Logger.getLogger(ServletCandidatePhoto.class);
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String photoId = request.getParameter("photoId");
         File file = new File("images" + File.separator + photoId);

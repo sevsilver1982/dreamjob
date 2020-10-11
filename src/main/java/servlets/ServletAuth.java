@@ -15,14 +15,15 @@ public class ServletAuth extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/login.do");
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         if ("root@local".equals(email) && "root".equals(password)) {
-            User admin = new User();
-            admin.setName("admin");
-            admin.setEmail(email);
-            request.getSession().setAttribute("user", admin);
+            User user = new User();
+            user.setName("admin");
+            user.setEmail(email);
+            request.getSession().setAttribute("user", user);
             response.sendRedirect(request.getContextPath() + "/index.do");
         } else {
             request.setAttribute("error", "Не верный email или пароль");

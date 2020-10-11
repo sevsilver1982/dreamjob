@@ -14,7 +14,7 @@
         <script>
             function deleteCandidate() {
                 if (confirm("Удалить?")) {
-                    document.location.href='<c:url value="/candidate_delete?id=${candidate.id}"/>'
+                    document.location.href='<c:url value="/candidate_delete.do?id=${candidate.id}"/>'
                 }
             }
         </script>
@@ -32,7 +32,7 @@
                     <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp"> <c:out value="${user.name}"/> | Выйти</a>
                 </div>
             </div>
-            <form action="<c:url value="/candidate_edit?id=${candidate.id}"/>" method="post" enctype="multipart/form-data">
+            <form action="<c:url value="/candidate_edit.do?id=${candidate.id}"/>" method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-header">
                         <c:choose>
@@ -42,8 +42,8 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group" align="center">
-                            <a href="<c:url value="/candidate_photo?photoId=${candidate.photoId}"/>">
-                                <img class="card-img-top-fluid" id="image" height="250px" src="<c:url value="/candidate_photo?photoId=${candidate.photoId}"/>" alt="<Фото отсутствует>"/>
+                            <a href="<c:url value="/candidate_photo.do?photoId=${candidate.photoId}"/>">
+                                <img class="card-img-top-fluid" id="image" height="250px" src="<c:url value="/candidate_photo.do?photoId=${candidate.photoId}"/>" alt="<Фото отсутствует>"/>
                             </a>
                             <br>
                             <br>

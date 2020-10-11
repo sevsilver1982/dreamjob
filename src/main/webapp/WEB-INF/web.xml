@@ -56,11 +56,11 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletOfferEdit</servlet-name>
-    <url-pattern>/offer_edit</url-pattern>
+    <url-pattern>/offer_edit.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletOfferDelete</servlet-name>
-    <url-pattern>/offer_delete</url-pattern>
+    <url-pattern>/offer_delete.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletCandidate</servlet-name>
@@ -68,16 +68,26 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletCandidateEdit</servlet-name>
-    <url-pattern>/candidate_edit</url-pattern>
+    <url-pattern>/candidate_edit.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletCandidatePhoto</servlet-name>
-    <url-pattern>/candidate_photo</url-pattern>
+    <url-pattern>/candidate_photo.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServletCandidateDelete</servlet-name>
-    <url-pattern>/candidate_delete</url-pattern>
+    <url-pattern>/candidate_delete.do</url-pattern>
   </servlet-mapping>
+
+  <filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>filters.FilterAuth</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
 
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>

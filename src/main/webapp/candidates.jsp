@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-header">Анкеты кандидатов</div>
                 <div class="card-body">
-                    <a class="card-link" href="<c:url value="/candidate_edit"/>">Добавить</a>
+                    <a class="card-link" href="<c:url value="/candidate_edit.do"/>">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -41,13 +41,13 @@
                         </thead>
                         <tbody>
                             <c:forEach items="${candidates}" var="candidate">
-                                <tr onclick="window.location='<c:url value="/candidate_edit?id=${candidate.id}"/>'">
+                                <tr onclick="window.location='<c:url value="/candidate_edit.do?id=${candidate.id}"/>'">
                                     <td><c:out value="${candidate.id}"/></td>
                                     <td><fmt:formatDate pattern="dd-MM-yyyy" type="date" value="${candidate.date}"/></td>
                                     <td><c:out value="${candidate.name}"/></td>
                                     <td><c:out value="${candidate.description}"/></td>
                                     <td align="center">
-                                        <img src="<c:url value="/candidate_photo?photoId=${candidate.photoId}"/>" height="30px"/>
+                                        <img src="<c:url value="/candidate_photo.do?photoId=${candidate.photoId}"/>" height="30px"/>
                                     </td>
                                 </tr>
                             </c:forEach>

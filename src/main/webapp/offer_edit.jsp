@@ -14,7 +14,7 @@
         <script>
             function deleteOffer() {
                 if (confirm("Удалить?")) {
-                    document.location.href='<c:url value="/offer_delete?id=${offer.id}"/>'
+                    document.location.href='<c:url value="/offer_delete.do?id=${offer.id}"/>'
                 }
             }
         </script>

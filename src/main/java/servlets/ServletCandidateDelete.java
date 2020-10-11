@@ -12,6 +12,7 @@ import java.io.IOException;
 public class ServletCandidateDelete extends HttpServlet {
     static Logger logger = Logger.getLogger(ServletCandidateDelete.class);
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             CandidateStoreDBImpl.getInstance().delete(

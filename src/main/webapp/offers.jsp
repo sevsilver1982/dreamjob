@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-header">Вакансии</div>
                 <div class="card-body">
-                    <a class="card-link" href="<c:url value="/offer_edit"/>">Добавить</a>
+                    <a class="card-link" href="<c:url value="/offer_edit.do"/>">Добавить</a>
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
@@ -40,7 +40,7 @@
                         </thead>
                         <tbody>
                             <c:forEach items="${offers}" var="offer">
-                                <tr onclick="window.location='<c:url value="/offer_edit?id=${offer.id}"/>'">
+                                <tr onclick="window.location='<c:url value="/offer_edit.do?id=${offer.id}"/>'">
                                     <td><c:out value="${offer.id}"/></td>
                                     <td><c:out value="${offer.name}"/></td>
                                     <td><c:out value="${offer.author}"/></td>
