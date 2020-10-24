@@ -2,15 +2,13 @@ package store;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class StorePsqlHikariCP {
-    private static final Logger LOGGER = Logger.getLogger(StorePsqlHikariCP.class);
-    private HikariDataSource pool = null;
+    private HikariDataSource pool;
 
     private StorePsqlHikariCP() {
         Properties properties = new Properties();
@@ -25,7 +23,7 @@ public class StorePsqlHikariCP {
             hikariConfig.setMaximumPoolSize(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
             pool = new HikariDataSource(hikariConfig);
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -38,11 +36,11 @@ public class StorePsqlHikariCP {
     }
 
     public static Connection getConnection() {
-        Connection connection = null;
+        Connection connection;
         try {
             connection = getInstance().pool.getConnection();
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
         return connection;
     }

@@ -1,14 +1,12 @@
 package store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class StorePsqlDbcp2 {
-    private static final Logger LOGGER = Logger.getLogger(StorePsqlDbcp2.class);
     private final BasicDataSource pool = new BasicDataSource();
 
     private StorePsqlDbcp2() {
@@ -23,7 +21,7 @@ public class StorePsqlDbcp2 {
             pool.setMaxIdle(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
             pool.setMaxOpenPreparedStatements(100);
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -36,11 +34,11 @@ public class StorePsqlDbcp2 {
     }
 
     public static Connection getConnection() {
-        Connection connection = null;
+        Connection connection;
         try {
             connection = getInstance().pool.getConnection();
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
         return connection;
     }

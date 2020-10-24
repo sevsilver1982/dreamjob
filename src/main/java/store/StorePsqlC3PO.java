@@ -1,14 +1,12 @@
 package store;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class StorePsqlC3PO {
-    private static final Logger LOGGER = Logger.getLogger(StorePsqlC3PO.class);
     private final ComboPooledDataSource pool = new ComboPooledDataSource();
 
     private StorePsqlC3PO() {
@@ -22,7 +20,7 @@ public class StorePsqlC3PO {
             pool.setMinPoolSize(Integer.parseInt(properties.getProperty("datasource.minIdle")));
             pool.setMaxPoolSize(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -35,11 +33,11 @@ public class StorePsqlC3PO {
     }
 
     public static Connection getConnection() {
-        Connection connection = null;
+        Connection connection;
         try {
             connection = getInstance().pool.getConnection();
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
         return connection;
     }

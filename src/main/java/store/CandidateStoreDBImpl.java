@@ -15,12 +15,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CandidateStoreDBImpl implements Store<Candidate> {
-    private static final String FOLDER = "images" + File.separator;
-
     private static final CandidateStoreDBImpl INSTANCE = new CandidateStoreDBImpl();
-    private final Connection connection = StorePsqlC3PO.getConnection();
-    //private final Connection connection = StorePsqlHikariCP.getConnection();
-    //private final Connection connection = StorePsqlDbcp2.getConnection();
+    private static final String FOLDER = "images" + File.separator;
 
     private CandidateStoreDBImpl() {
     }
@@ -30,7 +26,7 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
     }
 
     public void deletePhoto(Candidate candidate) {
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             try {
                 /* delete photo from database */
                 connection.setAutoCommit(false);
@@ -66,7 +62,7 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
 
     public void setPhoto(Candidate candidate, byte[] photo) {
         int photoId;
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (candidate.getPhotoId() > 0) {
                 deletePhoto(candidate);
             }
@@ -108,7 +104,7 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
     public boolean add(Candidate item) {
         int rowsAffected = 0;
         int i = 1;
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (item.getId() == 0) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO candidates (date, name, description) VALUES (?, ?, ?)")) {
                     preparedStatement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
@@ -137,7 +133,8 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
     @Override
     public Collection<Candidate> find() {
         List<Candidate> candidates = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM candidates");
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM candidates");
              ResultSet resultSet = preparedStatement.executeQuery()
         ) {
             while (resultSet.next()) {
@@ -171,7 +168,9 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
     @Override
     public boolean delete(int id) {
         deletePhoto(find(id));
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM candidates WHERE id = ?")) {
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM candidates WHERE id = ?")
+        ) {
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
