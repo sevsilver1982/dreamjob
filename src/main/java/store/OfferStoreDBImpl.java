@@ -1,7 +1,6 @@
 package store;
 
 import model.Offer;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,10 +12,14 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
-    static Logger logger = Logger.getLogger(OfferStoreDBImpl.class);
+public class OfferStoreDBImpl implements Store<Offer> {
     private static final OfferStoreDBImpl INSTANCE = new OfferStoreDBImpl();
-    private final Connection connection = super.getConnection();
+    private final Connection connection = StorePsqlC3PO.getConnection();
+    //private final Connection connection = StorePsqlHikariCP.getConnection();
+    //private final Connection connection = StorePsqlDbcp2.getConnection();
+
+    private OfferStoreDBImpl() {
+    }
 
     public static OfferStoreDBImpl getInstance() {
         return INSTANCE;
@@ -46,7 +49,7 @@ public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
                 }
             }
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
         return rowsAffected > 0;
     }

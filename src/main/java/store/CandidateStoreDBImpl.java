@@ -1,7 +1,6 @@
 package store;
 
 import model.Candidate;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,11 +14,16 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
-    static Logger logger = Logger.getLogger(CandidateStoreDBImpl.class);
+public class CandidateStoreDBImpl implements Store<Candidate> {
     private static final String FOLDER = "images" + File.separator;
+
     private static final CandidateStoreDBImpl INSTANCE = new CandidateStoreDBImpl();
-    private final Connection connection = super.getConnection();
+    private final Connection connection = StorePsqlC3PO.getConnection();
+    //private final Connection connection = StorePsqlHikariCP.getConnection();
+    //private final Connection connection = StorePsqlDbcp2.getConnection();
+
+    private CandidateStoreDBImpl() {
+    }
 
     public static CandidateStoreDBImpl getInstance() {
         return INSTANCE;
@@ -56,7 +60,7 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
                 connection.setAutoCommit(true);
             }
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
     }
 
@@ -96,7 +100,7 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
             candidate.setPhotoId(photoId);
             candidate.setPhoto(null);
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
     }
 
@@ -125,7 +129,7 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
                 setPhoto(item, item.getPhoto());
             }
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
         return rowsAffected > 0;
     }

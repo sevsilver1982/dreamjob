@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class ServletCandidatePhoto extends HttpServlet {
-    static Logger logger = Logger.getLogger(ServletCandidatePhoto.class);
+    private static final Logger LOGGER = Logger.getLogger(ServletCandidatePhoto.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -24,7 +24,7 @@ public class ServletCandidatePhoto extends HttpServlet {
                 response.setHeader("Content-Disposition", String.format("attachment; filename=%s", photoId));
                 response.getOutputStream().write(in.readAllBytes());
             } catch (Exception e) {
-                logger.debug(e.getStackTrace());
+                LOGGER.debug(e.getMessage());
             }
         }
     }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 public class ServletOfferEdit extends HttpServlet {
-    static Logger logger = Logger.getLogger(ServletOfferEdit.class);
+    private static final Logger LOGGER = Logger.getLogger(ServletOfferEdit.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -27,7 +27,7 @@ public class ServletOfferEdit extends HttpServlet {
                             .build()
             );
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            LOGGER.debug(e.getMessage());
         }
         request.getRequestDispatcher("offer_edit.jsp").forward(request, response);
     }
