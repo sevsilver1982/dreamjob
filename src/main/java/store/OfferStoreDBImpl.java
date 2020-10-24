@@ -1,7 +1,6 @@
 package store;
 
 import model.Offer;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,10 +12,11 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
-    static Logger logger = Logger.getLogger(OfferStoreDBImpl.class);
+public class OfferStoreDBImpl implements Store<Offer> {
     private static final OfferStoreDBImpl INSTANCE = new OfferStoreDBImpl();
-    private final Connection connection = super.getConnection();
+
+    private OfferStoreDBImpl() {
+    }
 
     public static OfferStoreDBImpl getInstance() {
         return INSTANCE;
@@ -26,7 +26,7 @@ public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
     public boolean add(Offer item) {
         int rowsAffected = 0;
         int i = 1;
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (item.getId() == 0) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO offers (date, name, author, text) VALUES (?, ?, ?, ?)")) {
                     preparedStatement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
@@ -46,7 +46,7 @@ public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
                 }
             }
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
         return rowsAffected > 0;
     }
@@ -54,7 +54,8 @@ public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
     @Override
     public Collection<Offer> find() {
         List<Offer> offers = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM offers");
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM offers");
              ResultSet resultSet = preparedStatement.executeQuery()
         ) {
             while (resultSet.next()) {
@@ -87,7 +88,9 @@ public class OfferStoreDBImpl extends StoreDBImpl<Offer> {
 
     @Override
     public boolean delete(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM offers WHERE id = ?")) {
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM offers WHERE id = ?")
+        ) {
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ServletCandidateDelete extends HttpServlet {
-    static Logger logger = Logger.getLogger(ServletCandidateDelete.class);
+    private static final Logger LOGGER = Logger.getLogger(ServletCandidateDelete.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,7 +25,7 @@ public class ServletCandidateDelete extends HttpServlet {
                             .getId()
             );
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            LOGGER.debug(e.getMessage());
         }
         response.sendRedirect(request.getContextPath() + "/candidates.do");
     }

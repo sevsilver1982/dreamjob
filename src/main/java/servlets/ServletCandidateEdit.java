@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ServletCandidateEdit extends HttpServlet {
-    static Logger logger = Logger.getLogger(ServletCandidateEdit.class);
+    private static final Logger LOGGER = Logger.getLogger(ServletCandidateEdit.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,7 +33,7 @@ public class ServletCandidateEdit extends HttpServlet {
                                     .build()
             );
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            LOGGER.debug(e.getMessage());
         }
         request.getRequestDispatcher("candidate_edit.jsp").forward(request, response);
     }
@@ -96,12 +96,12 @@ public class ServletCandidateEdit extends HttpServlet {
                        }
                     }
                 } catch (Exception e) {
-                    logger.debug(e.getStackTrace());
+                    LOGGER.debug(e.getMessage());
                 }
             });
             CandidateStoreDBImpl.getInstance().add(candidate);
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            LOGGER.debug(e.getMessage());
         }
         response.sendRedirect(request.getContextPath() + "/candidates.do");
     }

@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class ServletOffer extends HttpServlet {
-    static Logger logger = Logger.getLogger(ServletOffer.class);
+    private static final Logger LOGGER = Logger.getLogger(ServletOffer.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -36,7 +36,7 @@ public class ServletOffer extends HttpServlet {
                             .build()
             );
         } catch (ParseException e) {
-            logger.debug(e.getStackTrace());
+            LOGGER.debug(e.getMessage());
         }
         response.sendRedirect(request.getContextPath() + "/offers.do");
     }

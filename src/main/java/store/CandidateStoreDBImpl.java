@@ -1,7 +1,6 @@
 package store;
 
 import model.Candidate;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,18 +14,19 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
-    static Logger logger = Logger.getLogger(CandidateStoreDBImpl.class);
-    private static final String FOLDER = "images" + File.separator;
+public class CandidateStoreDBImpl implements Store<Candidate> {
     private static final CandidateStoreDBImpl INSTANCE = new CandidateStoreDBImpl();
-    private final Connection connection = super.getConnection();
+    private static final String FOLDER = "images" + File.separator;
+
+    private CandidateStoreDBImpl() {
+    }
 
     public static CandidateStoreDBImpl getInstance() {
         return INSTANCE;
     }
 
     public void deletePhoto(Candidate candidate) {
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             try {
                 /* delete photo from database */
                 connection.setAutoCommit(false);
@@ -56,13 +56,13 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
                 connection.setAutoCommit(true);
             }
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
     }
 
     public void setPhoto(Candidate candidate, byte[] photo) {
         int photoId;
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (candidate.getPhotoId() > 0) {
                 deletePhoto(candidate);
             }
@@ -96,7 +96,7 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
             candidate.setPhotoId(photoId);
             candidate.setPhoto(null);
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
     public boolean add(Candidate item) {
         int rowsAffected = 0;
         int i = 1;
-        try {
+        try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (item.getId() == 0) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO candidates (date, name, description) VALUES (?, ?, ?)")) {
                     preparedStatement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
@@ -125,7 +125,7 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
                 setPhoto(item, item.getPhoto());
             }
         } catch (Exception e) {
-            logger.debug(e.getStackTrace());
+            throw new RuntimeException(e);
         }
         return rowsAffected > 0;
     }
@@ -133,7 +133,8 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
     @Override
     public Collection<Candidate> find() {
         List<Candidate> candidates = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM candidates");
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM candidates");
              ResultSet resultSet = preparedStatement.executeQuery()
         ) {
             while (resultSet.next()) {
@@ -167,7 +168,9 @@ public class CandidateStoreDBImpl extends StoreDBImpl<Candidate> {
     @Override
     public boolean delete(int id) {
         deletePhoto(find(id));
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM candidates WHERE id = ?")) {
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM candidates WHERE id = ?")
+        ) {
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
