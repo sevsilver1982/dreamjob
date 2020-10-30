@@ -32,7 +32,7 @@
                     <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp"> <c:out value="${user.name}"/> | Выйти</a>
                 </div>
             </div>
-            <form action="<c:url value="/offers.do?id=${offer.id}"/>" method="post">
+            <form action="<c:url value="/offer_edit.do?id=${offer.id}"/>" method="post">
                 <div class="card">
                     <div class="card-header">
                         <c:choose>

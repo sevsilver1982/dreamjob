@@ -7,39 +7,39 @@
 
   <servlet>
     <servlet-name>ServletAuth</servlet-name>
-    <servlet-class>servlets.ServletAuth</servlet-class>
+    <servlet-class>servlet.ServletAuth</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletIndex</servlet-name>
-    <servlet-class>servlets.ServletIndex</servlet-class>
+    <servlet-class>servlet.ServletIndex</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletOffer</servlet-name>
-    <servlet-class>servlets.ServletOffer</servlet-class>
+    <servlet-class>servlet.ServletOffer</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletOfferEdit</servlet-name>
-    <servlet-class>servlets.ServletOfferEdit</servlet-class>
+    <servlet-class>servlet.ServletOfferEdit</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletOfferDelete</servlet-name>
-    <servlet-class>servlets.ServletOfferDelete</servlet-class>
+    <servlet-class>servlet.ServletOfferDelete</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletCandidate</servlet-name>
-    <servlet-class>servlets.ServletCandidate</servlet-class>
+    <servlet-class>servlet.ServletCandidate</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletCandidateEdit</servlet-name>
-    <servlet-class>servlets.ServletCandidateEdit</servlet-class>
+    <servlet-class>servlet.ServletCandidateEdit</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletCandidatePhoto</servlet-name>
-    <servlet-class>servlets.ServletCandidatePhoto</servlet-class>
+    <servlet-class>servlet.ServletCandidatePhoto</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ServletCandidateDelete</servlet-name>
-    <servlet-class>servlets.ServletCandidateDelete</servlet-class>
+    <servlet-class>servlet.ServletCandidateDelete</servlet-class>
   </servlet>
 
   <servlet-mapping>

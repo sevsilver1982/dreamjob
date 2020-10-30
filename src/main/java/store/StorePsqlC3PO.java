@@ -7,18 +7,18 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class StorePsqlC3PO {
-    private final ComboPooledDataSource pool = new ComboPooledDataSource();
+    private static final ComboPooledDataSource POOL = new ComboPooledDataSource();
 
     private StorePsqlC3PO() {
         Properties properties = new Properties();
         try {
             properties.load(this.getClass().getClassLoader().getResourceAsStream("app.properties"));
-            pool.setDriverClass(properties.getProperty("jdbc.driver"));
-            pool.setJdbcUrl(properties.getProperty("datasource.url"));
-            pool.setUser(properties.getProperty("datasource.username"));
-            pool.setPassword(properties.getProperty("datasource.password"));
-            pool.setMinPoolSize(Integer.parseInt(properties.getProperty("datasource.minIdle")));
-            pool.setMaxPoolSize(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
+            POOL.setDriverClass(properties.getProperty("jdbc.driver"));
+            POOL.setJdbcUrl(properties.getProperty("datasource.url"));
+            POOL.setUser(properties.getProperty("datasource.username"));
+            POOL.setPassword(properties.getProperty("datasource.password"));
+            POOL.setMinPoolSize(Integer.parseInt(properties.getProperty("datasource.minIdle")));
+            POOL.setMaxPoolSize(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -35,7 +35,7 @@ public class StorePsqlC3PO {
     public static Connection getConnection() {
         Connection connection;
         try {
-            connection = getInstance().pool.getConnection();
+            connection = getInstance().POOL.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

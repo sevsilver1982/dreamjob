@@ -3,7 +3,7 @@ package model;
 import java.util.Date;
 import java.util.Objects;
 
-public class Offer implements ItemImpl {
+public class Offer implements Item {
     private int id = 0;
     private Date date;
     private String name = "";
@@ -99,7 +99,7 @@ public class Offer implements ItemImpl {
 
     @Override
     public String toString() {
-        return String.format("Offer{id=%s, date=%s, name='%s', author='%s', text=%s}", id, date, author, text);
+        return String.format("Offer{id=%s, date=%s, name=%s, author=%s, text=%s}", id, date, name, author, text);
     }
 
 }

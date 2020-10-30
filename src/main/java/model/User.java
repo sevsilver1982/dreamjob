@@ -57,4 +57,9 @@ public class User {
         return Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return String.format("User{id=%s, name=%s, email=%s}", id, name, email);
+    }
+
 }

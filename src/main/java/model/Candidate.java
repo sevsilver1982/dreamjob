@@ -3,13 +3,12 @@ package model;
 import java.util.Date;
 import java.util.Objects;
 
-public class Candidate implements ItemImpl {
+public class Candidate implements Item {
     private int id = 0;
     private Date date = null;
     private String name = "";
     private String description = "";
     private int photoId = 0;
-    private byte[] photo = null;
 
     public Builder builder() {
         return new Builder();
@@ -42,13 +41,8 @@ public class Candidate implements ItemImpl {
             return this;
         }
 
-        public Builder setPhotoId(int id) {
-            candidate.photoId = id;
-            return this;
-        }
-
-        public Builder setPhoto(int photo) {
-            candidate.photoId = photo;
+        public Builder setPhotoId(int photoId) {
+            candidate.photoId = photoId;
             return this;
         }
 
@@ -59,6 +53,11 @@ public class Candidate implements ItemImpl {
     }
 
     @Override
+    public boolean isEmpty() {
+        return (id == 0 && date == null && name.equals("") && description.equals(""));
+    }
+
+    @Override
     public int getId() {
         return id;
     }
@@ -66,11 +65,6 @@ public class Candidate implements ItemImpl {
     @Override
     public void setId(int id) {
         this.id = id;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return (id == 0 && date == null && name.equals("") && description.equals("") && photoId == 0);
     }
 
     public Date getDate() {
@@ -105,14 +99,6 @@ public class Candidate implements ItemImpl {
         this.photoId = photoId;
     }
 
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -132,7 +118,7 @@ public class Candidate implements ItemImpl {
 
     @Override
     public String toString() {
-        return String.format("Candidate{id=%s, date=%s, name='%s', description='%s', photo=%s}", id, date, name, description, photoId);
+        return String.format("Candidate{id=%s, date=%s, name=%s, description=%s, photoId=%s}", id, date, name, description, photoId);
     }
 
 }

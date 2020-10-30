@@ -1,7 +1,9 @@
-package servlets;
+package servlet;
 
+import model.Offer;
 import org.apache.log4j.Logger;
-import store.OfferStoreDBImpl;
+import store.OfferStoreDB;
+import store.Store;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,23 +13,16 @@ import java.io.IOException;
 
 public class ServletOfferDelete extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(ServletOfferDelete.class);
+    private static final Store<Offer> STORE = OfferStoreDB.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            OfferStoreDBImpl.getInstance().delete(
-                    OfferStoreDBImpl.getInstance().find(offer ->
-                            offer.getId() == Integer.parseInt(request.getParameter("id"))
-                    )
-                            .stream()
-                            .findFirst()
-                            .orElseThrow()
-                            .getId()
-            );
+            STORE.delete(Integer.parseInt(request.getParameter("id")));
+            response.sendRedirect(request.getContextPath() + "/offers.do");
         } catch (Exception e) {
             LOGGER.debug(e.getMessage());
         }
-        response.sendRedirect(request.getContextPath() + "/offers.do");
     }
 
 }
