@@ -18,7 +18,7 @@ public class ServletOfferEdit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String reqId = request.getParameter("id");
-            Offer offer = OfferStoreDBImpl.getInstance().find(reqId == null ? 0 : Integer.parseInt(reqId));
+            Offer offer = OfferStoreDBImpl.getInstance().findById(reqId == null ? 0 : Integer.parseInt(reqId));
             request.setAttribute("offer",
                     offer != null ? offer
                             : new Offer()

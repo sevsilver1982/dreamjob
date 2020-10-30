@@ -18,7 +18,7 @@ public class OfferStoreDBImpl implements Store<Offer> {
     private OfferStoreDBImpl() {
     }
 
-    public static OfferStoreDBImpl getInstance() {
+    public static Store<Offer> getInstance() {
         return INSTANCE;
     }
 
@@ -52,7 +52,7 @@ public class OfferStoreDBImpl implements Store<Offer> {
     }
 
     @Override
-    public Collection<Offer> find() {
+    public Collection<Offer> findAll() {
         List<Offer> offers = new ArrayList<>();
         try (Connection connection = StorePsqlC3PO.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM offers");
@@ -75,11 +75,13 @@ public class OfferStoreDBImpl implements Store<Offer> {
         return offers;
     }
 
-    public Collection<Offer> find(Predicate<Offer> offerPredicate) {
-        return find().stream().filter(offerPredicate).collect(Collectors.toList());
+    @Override
+    public Collection<Offer> find(Predicate<Offer> predicate) {
+        return findAll().stream().filter(predicate).collect(Collectors.toList());
     }
 
-    public Offer find(int id) {
+    @Override
+    public Offer findById(int id) {
         return find(offer -> offer.getId() == id)
                 .stream()
                 .findFirst()

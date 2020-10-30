@@ -24,7 +24,7 @@ public class ServletCandidateEdit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String reqId = request.getParameter("id");
-            Candidate candidate = CandidateStoreDBImpl.getInstance().find(reqId == null ? 0 : Integer.parseInt(reqId));
+            Candidate candidate = CandidateStoreDBImpl.getInstance().findById(reqId == null ? 0 : Integer.parseInt(reqId));
             request.setAttribute("candidate",
                     candidate != null ? candidate
                             : new Candidate()

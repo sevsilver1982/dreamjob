@@ -21,6 +21,7 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
     private CandidateStoreDBImpl() {
     }
 
+
     public static CandidateStoreDBImpl getInstance() {
         return INSTANCE;
     }
@@ -131,7 +132,7 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
     }
 
     @Override
-    public Collection<Candidate> find() {
+    public Collection<Candidate> findAll() {
         List<Candidate> candidates = new ArrayList<>();
         try (Connection connection = StorePsqlC3PO.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM candidates");
@@ -154,11 +155,13 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
         return candidates;
     }
 
-    public Collection<Candidate> find(Predicate<Candidate> candidatePredicate) {
-        return find().stream().filter(candidatePredicate).collect(Collectors.toList());
+    @Override
+    public Collection<Candidate> find(Predicate<Candidate> predicate) {
+        return findAll().stream().filter(predicate).collect(Collectors.toList());
     }
 
-    public Candidate find(int id) {
+    @Override
+    public Candidate findById(int id) {
         return find(candidate -> candidate.getId() == id)
                 .stream()
                 .findFirst()
@@ -167,7 +170,7 @@ public class CandidateStoreDBImpl implements Store<Candidate> {
 
     @Override
     public boolean delete(int id) {
-        deletePhoto(find(id));
+        deletePhoto(findById(id));
         try (Connection connection = StorePsqlC3PO.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM candidates WHERE id = ?")
         ) {

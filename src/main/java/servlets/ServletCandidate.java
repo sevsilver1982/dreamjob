@@ -12,7 +12,7 @@ public class ServletCandidate extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("candidates", CandidateStoreDBImpl.getInstance().find());
+        request.setAttribute("candidates", CandidateStoreDBImpl.getInstance().findAll());
         request.getRequestDispatcher("candidates.jsp").forward(request, response);
     }
 

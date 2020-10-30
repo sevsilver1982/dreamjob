@@ -17,7 +17,7 @@ public class ServletOffer extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("offers", OfferStoreDBImpl.getInstance().find());
+        request.setAttribute("offers", OfferStoreDBImpl.getInstance().findAll());
         request.getRequestDispatcher("offers.jsp").forward(request, response);
     }
 
