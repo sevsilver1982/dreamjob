@@ -7,36 +7,31 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class StorePsqlDbcp2 {
-    private final BasicDataSource pool = new BasicDataSource();
+    private static final BasicDataSource POOL = new BasicDataSource();
 
     private StorePsqlDbcp2() {
+    }
+
+    static {
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("app.properties"));
-            pool.setDriverClassName(properties.getProperty("jdbc.driver"));
-            pool.setUrl(properties.getProperty("datasource.url"));
-            pool.setUsername(properties.getProperty("datasource.username"));
-            pool.setPassword(properties.getProperty("datasource.password"));
-            pool.setMinIdle(Integer.parseInt(properties.getProperty("datasource.minIdle")));
-            pool.setMaxIdle(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
-            pool.setMaxOpenPreparedStatements(100);
+            properties.load(StorePsqlDbcp2.class.getClassLoader().getResourceAsStream("app.properties"));
+            POOL.setDriverClassName(properties.getProperty("jdbc.driver"));
+            POOL.setUrl(properties.getProperty("datasource.url"));
+            POOL.setUsername(properties.getProperty("datasource.username"));
+            POOL.setPassword(properties.getProperty("datasource.password"));
+            POOL.setMinIdle(Integer.parseInt(properties.getProperty("datasource.minIdle")));
+            POOL.setMaxIdle(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
+            POOL.setMaxOpenPreparedStatements(100);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static final class Props {
-        private static final StorePsqlDbcp2 INSTANCE = new StorePsqlDbcp2();
-    }
-
-    public static StorePsqlDbcp2 getInstance() {
-        return Props.INSTANCE;
-    }
-
     public static Connection getConnection() {
         Connection connection;
         try {
-            connection = getInstance().pool.getConnection();
+            connection = POOL.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

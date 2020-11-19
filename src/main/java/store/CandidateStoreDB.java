@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CandidateStoreDB implements Store<Candidate> {
-    private static final CandidateStoreDB INSTANCE = new CandidateStoreDB();
+    private static final Store<Candidate> INSTANCE = new CandidateStoreDB();
 
     private CandidateStoreDB() {
     }

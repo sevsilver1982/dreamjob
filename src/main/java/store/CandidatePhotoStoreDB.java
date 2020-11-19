@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CandidatePhotoStoreDB {
+public class CandidatePhotoStoreDB implements Store<Photo> {
     private static final CandidatePhotoStoreDB INSTANCE = new CandidatePhotoStoreDB();
     private static final String FOLDER = "dreamjob" + File.separator + "images" + File.separator;
 
@@ -33,6 +33,11 @@ public class CandidatePhotoStoreDB {
             out.write(bytes);
         }
         return file;
+    }
+
+    @Override
+    public boolean add(Photo item) {
+        throw new RuntimeException("Will be implemented later");
     }
 
     public Photo add(byte[] bytes) {
@@ -64,6 +69,7 @@ public class CandidatePhotoStoreDB {
         return photo;
     }
 
+    @Override
     public Collection<Photo> findAll() {
         List<Photo> offers = new ArrayList<>();
         try (Connection connection = StorePsqlC3PO.getConnection();
@@ -85,6 +91,7 @@ public class CandidatePhotoStoreDB {
         return offers;
     }
 
+    @Override
     public Photo findById(int id) {
         return findAll().stream()
                 .filter(item -> item.getId() == id)
@@ -92,6 +99,7 @@ public class CandidatePhotoStoreDB {
                 .orElse(new Photo());
     }
 
+    @Override
     public boolean delete(int id) {
         try (Connection connection = StorePsqlC3PO.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM photo WHERE id = ?")

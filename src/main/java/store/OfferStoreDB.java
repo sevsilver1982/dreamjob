@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class OfferStoreDB implements Store<Offer> {
-    private static final OfferStoreDB INSTANCE = new OfferStoreDB();
+    private static final Store<Offer> INSTANCE = new OfferStoreDB();
 
     private OfferStoreDB() {
     }

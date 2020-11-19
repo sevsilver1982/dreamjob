@@ -31,7 +31,7 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    Сегоднящние вакансии
+                    Сегодняшние вакансии
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">

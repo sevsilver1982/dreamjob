@@ -3,6 +3,7 @@ package servlet;
 import model.Photo;
 import org.apache.log4j.Logger;
 import store.CandidatePhotoStoreDB;
+import store.Store;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 public class ServletCandidatePhoto extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(ServletCandidatePhoto.class);
-    private static final CandidatePhotoStoreDB STORE = CandidatePhotoStoreDB.getInstance();
+    private static final Store<Photo> STORE = CandidatePhotoStoreDB.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

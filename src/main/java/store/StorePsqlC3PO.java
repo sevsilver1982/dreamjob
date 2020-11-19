@@ -10,9 +10,12 @@ public class StorePsqlC3PO {
     private static final ComboPooledDataSource POOL = new ComboPooledDataSource();
 
     private StorePsqlC3PO() {
+    }
+
+    static {
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("app.properties"));
+            properties.load(StorePsqlC3PO.class.getClassLoader().getResourceAsStream("app.properties"));
             POOL.setDriverClass(properties.getProperty("jdbc.driver"));
             POOL.setJdbcUrl(properties.getProperty("datasource.url"));
             POOL.setUser(properties.getProperty("datasource.username"));
@@ -24,18 +27,10 @@ public class StorePsqlC3PO {
         }
     }
 
-    private static final class Props {
-        private static final StorePsqlC3PO INSTANCE = new StorePsqlC3PO();
-    }
-
-    public static StorePsqlC3PO getInstance() {
-        return Props.INSTANCE;
-    }
-
     public static Connection getConnection() {
         Connection connection;
         try {
-            connection = getInstance().POOL.getConnection();
+            connection = POOL.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

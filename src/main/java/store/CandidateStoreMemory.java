@@ -3,7 +3,7 @@ package store;
 import model.Candidate;
 
 public class CandidateStoreMemory extends StoreMemory<Candidate> {
-    private static final CandidateStoreMemory INSTANCE = new CandidateStoreMemory();
+    private static final Store<Candidate> INSTANCE = new CandidateStoreMemory();
 
     private CandidateStoreMemory() {
     }

@@ -8,12 +8,15 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class StorePsqlHikariCP {
-    private HikariDataSource pool;
+    private static final HikariDataSource POOL;
 
     private StorePsqlHikariCP() {
+    }
+
+    static {
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("app.properties"));
+            properties.load(StorePsqlHikariCP.class.getClassLoader().getResourceAsStream("app.properties"));
             HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setDriverClassName(properties.getProperty("jdbc.driver"));
             hikariConfig.setJdbcUrl(properties.getProperty("datasource.url"));
@@ -21,24 +24,16 @@ public class StorePsqlHikariCP {
             hikariConfig.setPassword(properties.getProperty("datasource.password"));
             hikariConfig.setMinimumIdle(Integer.parseInt(properties.getProperty("datasource.minIdle")));
             hikariConfig.setMaximumPoolSize(Integer.parseInt(properties.getProperty("datasource.maxIdle")));
-            pool = new HikariDataSource(hikariConfig);
+            POOL = new HikariDataSource(hikariConfig);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static final class Props {
-        private static final StorePsqlHikariCP INSTANCE = new StorePsqlHikariCP();
-    }
-
-    public static StorePsqlHikariCP getInstance() {
-        return Props.INSTANCE;
-    }
-
     public static Connection getConnection() {
         Connection connection;
         try {
-            connection = getInstance().pool.getConnection();
+            connection = POOL.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

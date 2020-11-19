@@ -1,6 +1,7 @@
 package servlet;
 
 import model.Candidate;
+import model.Photo;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -43,69 +44,70 @@ public class ServletCandidateEdit extends HttpServlet {
         }
     }
 
+    private Candidate getCandidate(List<FileItem> items) {
+        AtomicReference<Candidate> candidate = new AtomicReference<>();
+        items.stream()
+                .filter(FileItem::isFormField)
+                .forEach(fileItem -> {
+                    try {
+                        String value = fileItem.getString("UTF-8");
+                        switch (fileItem.getFieldName()) {
+                            case "id":
+                                candidate.get().setId(value == null ? 0 : Integer.parseInt(value));
+                                break;
+                            case "name":
+                                candidate.get().setName(value);
+                                break;
+                            case "description":
+                                candidate.get().setDescription(value);
+                                break;
+                            case "date":
+                                candidate.get().setDate(new SimpleDateFormat("yyyy-MM-dd").parse(fileItem.getString()));
+                                break;
+                            default:
+                                break;
+                        }
+                    } catch (Exception e) {
+                        LOGGER.debug(e.getMessage());
+                    }
+                });
+        return candidate.get();
+    }
+
+    private byte[] getPhoto(List<FileItem> items) {
+        AtomicReference<byte[]> bytes = new AtomicReference<>();
+        items.stream()
+                .filter(fileItem -> !fileItem.isFormField() && fileItem.getFieldName().equals("photo"))
+                .findFirst()
+                .ifPresent(fileItem -> {
+                    try {
+                        bytes.set(fileItem.getInputStream().readAllBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        return bytes.get();
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setCharacterEncoding("UTF-8");
-
-            // init repository
-            File repository = (File) getServletConfig()
-                    .getServletContext()
-                    .getAttribute("javax.servlet.context.tempdir");
             DiskFileItemFactory factory = new DiskFileItemFactory();
-            factory.setRepository(repository);
+            factory.setRepository((File) getServletConfig()
+                    .getServletContext()
+                    .getAttribute("javax.servlet.context.tempdir"));
 
             List<FileItem> items = new ServletFileUpload(factory).parseRequest(request);
+            Candidate candidate = getCandidate(items);
+            byte[] bytes = getPhoto(items);
 
-            // set candidate fields
-            Candidate candidate = new Candidate();
-
-            // form fields
-            items.stream()
-                    .filter(FileItem::isFormField)
-                    .forEach(fileItem -> {
-                        try {
-                            String value = fileItem.getString("UTF-8");
-                            switch (fileItem.getFieldName()) {
-                                case "id":
-                                    candidate.setId(value == null ? 0 : Integer.parseInt(value));
-                                    break;
-                                case "name":
-                                    candidate.setName(value);
-                                    break;
-                                case "description":
-                                    candidate.setDescription(value);
-                                    break;
-                                case "date":
-                                    candidate.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(fileItem.getString()));
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } catch (Exception e) {
-                            LOGGER.debug(e.getMessage());
-                        }
-                    });
-
-            // non form fields
-            AtomicReference<byte[]> bytes = new AtomicReference<>();
-            items.stream()
-                    .filter(fileItem -> !fileItem.isFormField() && fileItem.getFieldName().equals("photo"))
-                    .findFirst().ifPresent(fileItem -> {
-                        try {
-                            bytes.set(
-                                    fileItem.getInputStream().readAllBytes()
-                            );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-
-            int photoId = CANDIDATE_STORE.findById(candidate.getId()).getPhotoId();
-            candidate.setPhotoId(CANDIDATE_PHOTO_STORE.add(bytes.get()).getId());
+            int photoIdOld = CANDIDATE_STORE.findById(candidate.getId()).getPhotoId();
+            Photo photo = CANDIDATE_PHOTO_STORE.add(bytes);
+            candidate.setPhotoId(photo.getId());
             CANDIDATE_STORE.add(candidate);
-            if (photoId != 0) {
-                CANDIDATE_PHOTO_STORE.delete(photoId);
+            if (photoIdOld != 0) {
+                CANDIDATE_PHOTO_STORE.delete(photoIdOld);
             }
             response.sendRedirect(request.getContextPath() + "/candidates.do");
         } catch (Exception e) {
