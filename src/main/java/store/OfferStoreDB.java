@@ -24,7 +24,7 @@ public class OfferStoreDB implements Store<Offer> {
 
     @Override
     public boolean add(Offer item) {
-        int rowsAffected = 0;
+        int rowsAffected;
         int i = 1;
         try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (item.getId() == 0) {

@@ -21,28 +21,38 @@ public class CandidateStoreDB implements Store<Candidate> {
 
     @Override
     public boolean add(Candidate item) {
-        int rowsAffected = 0;
+        int rowsAffected;
         int i = 1;
         try (Connection connection = StorePsqlC3PO.getConnection()) {
             if (item.getId() == 0) {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO candidates (date, name, description, photo) VALUES (?, ?, ?, ?)")) {
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO candidates (date, name, description, photo, city) VALUES (?, ?, ?, ?, ?)")) {
                     statement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
                     statement.setString(i++, item.getName());
                     statement.setString(i++, item.getDescription());
                     if (item.getPhotoId() != 0) {
-                        statement.setInt(i, item.getPhotoId());
+                        statement.setInt(i++, item.getPhotoId());
+                    } else {
+                        statement.setNull(i++, Types.INTEGER);
+                    }
+                    if (item.getCity().getId() != 0) {
+                        statement.setInt(i, item.getCity().getId());
                     } else {
                         statement.setNull(i, Types.INTEGER);
                     }
                     rowsAffected = statement.executeUpdate();
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE candidates SET date = ?, name = ?, description = ?, photo = ? WHERE id = ?")) {
+                try (PreparedStatement statement = connection.prepareStatement("UPDATE candidates SET date = ?, name = ?, description = ?, photo = ?, city = ? WHERE id = ?")) {
                     statement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
                     statement.setString(i++, item.getName());
                     statement.setString(i++, item.getDescription());
                     if (item.getPhotoId() != 0) {
                         statement.setInt(i++, item.getPhotoId());
+                    } else {
+                        statement.setNull(i++, Types.INTEGER);
+                    }
+                    if (item.getCity().getId() != 0) {
+                        statement.setInt(i++, item.getCity().getId());
                     } else {
                         statement.setNull(i++, Types.INTEGER);
                     }
@@ -71,6 +81,7 @@ public class CandidateStoreDB implements Store<Candidate> {
                                 .setName(rs.getString("name"))
                                 .setDescription(rs.getString("description"))
                                 .setPhotoId(rs.getInt("photo"))
+                                .setCity(CitiesStoreDB.getInstance().findById(rs.getInt("city")))
                                 .build()
                 );
             }

@@ -9,6 +9,7 @@ public class Candidate implements Item {
     private String name = "";
     private String description = "";
     private int photoId = 0;
+    private City city = new City();
 
     public Builder builder() {
         return new Builder();
@@ -43,6 +44,11 @@ public class Candidate implements Item {
 
         public Builder setPhotoId(int photoId) {
             candidate.photoId = photoId;
+            return this;
+        }
+
+        public Builder setCity(City city) {
+            candidate.city = city;
             return this;
         }
 
@@ -99,6 +105,14 @@ public class Candidate implements Item {
         this.photoId = photoId;
     }
 
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -118,7 +132,7 @@ public class Candidate implements Item {
 
     @Override
     public String toString() {
-        return String.format("Candidate{id=%s, date=%s, name=%s, description=%s, photoId=%s}", id, date, name, description, photoId);
+        return String.format("Candidate{id=%s, date=%s, name=%s, description=%s, photoId=%s, cityId=%s}", id, date, name, description, photoId, city);
     }
 
 }

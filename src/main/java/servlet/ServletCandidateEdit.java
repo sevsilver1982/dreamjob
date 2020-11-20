@@ -8,6 +8,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 import store.CandidatePhotoStoreDB;
 import store.CandidateStoreDB;
+import store.CitiesStoreDB;
 import store.Store;
 
 import javax.servlet.ServletException;
@@ -29,8 +30,12 @@ public class ServletCandidateEdit extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            request.setCharacterEncoding("UTF-8");
             String reqId = request.getParameter("id");
-            Candidate candidate = CANDIDATE_STORE.findById(reqId == null ? 0 : Integer.parseInt(reqId));
+            if (reqId == null) {
+                throw new RuntimeException("Invalid id");
+            }
+            Candidate candidate = CANDIDATE_STORE.findById(Integer.parseInt(reqId));
             request.setAttribute("candidate",
                     !candidate.isEmpty() ? candidate
                             : new Candidate()
@@ -40,41 +45,47 @@ public class ServletCandidateEdit extends HttpServlet {
             );
             request.getRequestDispatcher("candidate_edit.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug(e);
         }
     }
 
-    private Candidate getCandidate(List<FileItem> items) {
-        AtomicReference<Candidate> candidate = new AtomicReference<>();
+    private Candidate getCandidateFromRequest(Candidate candidate, List<FileItem> items) {
         items.stream()
                 .filter(FileItem::isFormField)
                 .forEach(fileItem -> {
                     try {
                         String value = fileItem.getString("UTF-8");
                         switch (fileItem.getFieldName()) {
-                            case "id":
-                                candidate.get().setId(value == null ? 0 : Integer.parseInt(value));
-                                break;
                             case "name":
-                                candidate.get().setName(value);
+                                candidate.setName(value);
                                 break;
                             case "description":
-                                candidate.get().setDescription(value);
+                                candidate.setDescription(value);
                                 break;
                             case "date":
-                                candidate.get().setDate(new SimpleDateFormat("yyyy-MM-dd").parse(fileItem.getString()));
+                                candidate.setDate(
+                                        new SimpleDateFormat("yyyy-MM-dd").parse(value)
+                                );
+                                break;
+                            case "city":
+                                candidate.setCity(
+                                        CitiesStoreDB.getInstance().findById(Integer.parseInt(value))
+                                );
+                                break;
+                            case "photoId":
+                                candidate.setPhotoId(value.equals("") ? 0 : Integer.parseInt(value));
                                 break;
                             default:
                                 break;
                         }
                     } catch (Exception e) {
-                        LOGGER.debug(e.getMessage());
+                        LOGGER.debug(e);
                     }
                 });
-        return candidate.get();
+        return candidate;
     }
 
-    private byte[] getPhoto(List<FileItem> items) {
+    private byte[] getPhotoFromRequest(List<FileItem> items) {
         AtomicReference<byte[]> bytes = new AtomicReference<>();
         items.stream()
                 .filter(fileItem -> !fileItem.isFormField() && fileItem.getFieldName().equals("photo"))
@@ -93,25 +104,39 @@ public class ServletCandidateEdit extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setCharacterEncoding("UTF-8");
+            String reqId = request.getParameter("id");
+            if (reqId == null) {
+                throw new RuntimeException("Invalid id");
+            }
+            Candidate reqCandidate = CANDIDATE_STORE.findById(Integer.parseInt(reqId));
+            if (reqCandidate.isEmpty()) {
+                throw new RuntimeException("Invalid id");
+            }
+            int photoIdOld = reqCandidate.getPhotoId();
+
             DiskFileItemFactory factory = new DiskFileItemFactory();
             factory.setRepository((File) getServletConfig()
                     .getServletContext()
                     .getAttribute("javax.servlet.context.tempdir"));
 
             List<FileItem> items = new ServletFileUpload(factory).parseRequest(request);
-            Candidate candidate = getCandidate(items);
-            byte[] bytes = getPhoto(items);
+            Candidate candidate = getCandidateFromRequest(reqCandidate, items);
+            byte[] bytes = getPhotoFromRequest(items);
 
-            int photoIdOld = CANDIDATE_STORE.findById(candidate.getId()).getPhotoId();
-            Photo photo = CANDIDATE_PHOTO_STORE.add(bytes);
-            candidate.setPhotoId(photo.getId());
+            if (bytes != null && bytes.length != 0) {
+                candidate.setPhotoId(
+                        CANDIDATE_PHOTO_STORE
+                        .add(bytes)
+                        .getId());
+            }
             CANDIDATE_STORE.add(candidate);
-            if (photoIdOld != 0) {
+            if (candidate.getPhotoId() != photoIdOld) {
                 CANDIDATE_PHOTO_STORE.delete(photoIdOld);
             }
+
             response.sendRedirect(request.getContextPath() + "/candidates.do");
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug(e);
         }
     }
 

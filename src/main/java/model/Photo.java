@@ -30,7 +30,7 @@ public class Photo implements Item {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return (id == 0 && file == null);
     }
 
     @Override

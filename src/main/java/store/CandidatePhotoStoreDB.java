@@ -73,7 +73,7 @@ public class CandidatePhotoStoreDB implements Store<Photo> {
     public Collection<Photo> findAll() {
         List<Photo> offers = new ArrayList<>();
         try (Connection connection = StorePsqlC3PO.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM offers");
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM photo");
              ResultSet rs = statement.executeQuery()
         ) {
             while (rs.next()) {

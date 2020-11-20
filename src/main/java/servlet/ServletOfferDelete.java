@@ -21,7 +21,7 @@ public class ServletOfferDelete extends HttpServlet {
             STORE.delete(Integer.parseInt(request.getParameter("id")));
             response.sendRedirect(request.getContextPath() + "/offers.do");
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug(e);
         }
     }
 

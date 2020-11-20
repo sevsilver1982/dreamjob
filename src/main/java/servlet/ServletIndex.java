@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 public class ServletIndex extends HttpServlet {
-    private static final Logger LOGGER = Logger.getLogger(ServletCandidatePhoto.class);
+    private static final Logger LOGGER = Logger.getLogger(ServletIndex.class);
     private static final Store<Offer> OFFER_STORE = OfferStoreDB.getInstance();
     private static final Store<Candidate> CANDIDATE_STORE = CandidateStoreDB.getInstance();
 
@@ -35,7 +35,7 @@ public class ServletIndex extends HttpServlet {
             );
             request.getRequestDispatcher("index.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug(e);
         }
     }
 
