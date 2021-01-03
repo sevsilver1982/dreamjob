@@ -53,7 +53,7 @@
                         <td><c:out value="${candidate.name}"/></td>
                         <td><c:out value="${candidate.description}"/></td>
                         <td align="center">
-                            <img src="<c:url value="/candidate_photo.do?photoId=${candidate.photoId}"/>" height="30px"/>
+                            <img src="<c:url value="/candidate_photo.do?photoId=${candidate.photoId}"/>" height="30px" alt=""/>
                         </td>
                         <td><c:out value="${candidate.city.name}"/></td>
                     </tr>

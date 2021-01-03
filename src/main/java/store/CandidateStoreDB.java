@@ -2,12 +2,15 @@ package store;
 
 import model.Candidate;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class CandidateStoreDB implements Store<Candidate> {
     private static final Store<Candidate> INSTANCE = new CandidateStoreDB();
@@ -19,100 +22,144 @@ public class CandidateStoreDB implements Store<Candidate> {
         return INSTANCE;
     }
 
-    @Override
-    public boolean add(Candidate item) {
-        int rowsAffected;
-        int i = 1;
-        try (Connection connection = StorePsqlC3PO.getConnection()) {
-            if (item.getId() == 0) {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO candidates (date, name, description, photo, city) VALUES (?, ?, ?, ?, ?)")) {
-                    statement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
-                    statement.setString(i++, item.getName());
-                    statement.setString(i++, item.getDescription());
-                    if (item.getPhotoId() != 0) {
-                        statement.setInt(i++, item.getPhotoId());
-                    } else {
-                        statement.setNull(i++, Types.INTEGER);
+    public int executeUpdate(Function<Connection, PreparedStatement> command) {
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement ps = command.apply(connection)) {
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Collection<Candidate> executeQuery(Function<Connection, PreparedStatement> command, Predicate<Candidate> predicate) {
+        List<Candidate> list = new ArrayList<>();
+        try (Connection connection = StorePsqlC3PO.getConnection();
+             PreparedStatement ps = command.apply(connection);
+             ResultSet rs = ps.executeQuery()
+        ) {
+            if (!rs.isBeforeFirst()) {
+                return list;
+            }
+            while (rs.next()) {
+                Candidate item = new Candidate().builder()
+                        .setId(rs.getInt("id"))
+                        .setDate(rs.getDate("date"))
+                        .setName(rs.getString("name"))
+                        .setDescription(rs.getString("description"))
+                        .setPhotoId(rs.getInt("photo"))
+                        .setCity(CitiesStoreDB.getInstance().findById(rs.getInt("city")))
+                        .build();
+                if (predicate == null) {
+                    list.add(item);
+                } else {
+                    if (predicate.test(item)) {
+                        list.add(item);
                     }
-                    if (item.getCity().getId() != 0) {
-                        statement.setInt(i, item.getCity().getId());
-                    } else {
-                        statement.setNull(i, Types.INTEGER);
-                    }
-                    rowsAffected = statement.executeUpdate();
-                }
-            } else {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE candidates SET date = ?, name = ?, description = ?, photo = ?, city = ? WHERE id = ?")) {
-                    statement.setDate(i++, new java.sql.Date(item.getDate().getTime()));
-                    statement.setString(i++, item.getName());
-                    statement.setString(i++, item.getDescription());
-                    if (item.getPhotoId() != 0) {
-                        statement.setInt(i++, item.getPhotoId());
-                    } else {
-                        statement.setNull(i++, Types.INTEGER);
-                    }
-                    if (item.getCity().getId() != 0) {
-                        statement.setInt(i++, item.getCity().getId());
-                    } else {
-                        statement.setNull(i++, Types.INTEGER);
-                    }
-                    statement.setInt(i, item.getId());
-                    rowsAffected = statement.executeUpdate();
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return rowsAffected > 0;
+        return list;
+    }
+
+    @Override
+    public boolean add(Candidate item) {
+        if (item.getId() == 0) {
+            return executeUpdate(connection -> {
+                try {
+                    int i = 1;
+                    PreparedStatement ps = connection.prepareStatement("INSERT INTO candidates (date, name, description, photo, city) VALUES (?, ?, ?, ?, ?)");
+                    ps.setDate(i++, new java.sql.Date(item.getDate().getTime()));
+                    ps.setString(i++, item.getName());
+                    ps.setString(i++, item.getDescription());
+                    if (item.getPhotoId() != 0) {
+                        ps.setInt(i++, item.getPhotoId());
+                    } else {
+                        ps.setNull(i++, Types.INTEGER);
+                    }
+                    if (item.getCity().getId() != 0) {
+                        ps.setInt(i, item.getCity().getId());
+                    } else {
+                        ps.setNull(i, Types.INTEGER);
+                    }
+                    return ps;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }) > 0;
+        } else {
+            return executeUpdate(connection -> {
+                try {
+                    int i = 1;
+                    PreparedStatement ps = connection.prepareStatement("UPDATE candidates SET date = ?, name = ?, description = ?, photo = ?, city = ? WHERE id = ?");
+                    ps.setDate(i++, new java.sql.Date(item.getDate().getTime()));
+                    ps.setString(i++, item.getName());
+                    ps.setString(i++, item.getDescription());
+                    if (item.getPhotoId() != 0) {
+                        ps.setInt(i++, item.getPhotoId());
+                    } else {
+                        ps.setNull(i++, Types.INTEGER);
+                    }
+                    if (item.getCity().getId() != 0) {
+                        ps.setInt(i++, item.getCity().getId());
+                    } else {
+                        ps.setNull(i++, Types.INTEGER);
+                    }
+                    ps.setInt(i, item.getId());
+                    return ps;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }) > 0;
+        }
+    }
+
+    @Override
+    public Collection<Candidate> find(Predicate<Candidate> predicate) {
+        return executeQuery(connection -> {
+            try {
+                return connection.prepareStatement("SELECT * FROM candidates");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }, predicate);
     }
 
     @Override
     public Collection<Candidate> findAll() {
-        List<Candidate> candidates = new ArrayList<>();
-        try (Connection connection = StorePsqlC3PO.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM candidates");
-             ResultSet rs = statement.executeQuery()
-        ) {
-            while (rs.next()) {
-                candidates.add(
-                        new Candidate().builder()
-                                .setId(rs.getInt("id"))
-                                .setDate(rs.getDate("date"))
-                                .setName(rs.getString("name"))
-                                .setDescription(rs.getString("description"))
-                                .setPhotoId(rs.getInt("photo"))
-                                .setCity(CitiesStoreDB.getInstance().findById(rs.getInt("city")))
-                                .build()
-                );
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return candidates;
+        return find(null);
     }
 
     @Override
     public Candidate findById(int id) {
-        return findAll().stream()
-                .filter(item -> item.getId() == id)
-                .findFirst()
-                .orElse(new Candidate());
-    }
-
-    public Collection<Candidate> find(Predicate<Candidate> predicate) {
-        return findAll().stream().filter(predicate).collect(Collectors.toList());
+        Candidate item = new Candidate();
+        Collection<Candidate> list = executeQuery(connection -> {
+            try {
+                PreparedStatement ps = connection.prepareStatement("SELECT * FROM candidates WHERE id = ?");
+                ps.setInt(1, id);
+                return ps;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }, null);
+        if (!list.isEmpty()) {
+            item = list.iterator().next();
+        }
+        return item;
     }
 
     @Override
     public boolean delete(int id) {
-        try (Connection connection = StorePsqlC3PO.getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM candidates WHERE id = ?")
-        ) {
-            statement.setInt(1, id);
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return executeUpdate(connection -> {
+            try {
+                PreparedStatement ps = connection.prepareStatement("DELETE FROM candidates WHERE id = ?");
+                ps.setInt(1, id);
+                return ps;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }) > 0;
     }
 
 }

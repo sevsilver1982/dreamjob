@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 public class ServletIndex extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(ServletIndex.class);
@@ -24,18 +24,14 @@ public class ServletIndex extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setAttribute("offers",
-                    OFFER_STORE.findAll().stream()
-                            .filter(item -> java.sql.Date.valueOf(LocalDate.now()).compareTo(item.getDate()) == 0)
-                            .collect(Collectors.toList())
+                    OFFER_STORE.find(offer -> Date.valueOf(LocalDate.now()).compareTo(offer.getDate()) == 0)
             );
             request.setAttribute("candidates",
-                    CANDIDATE_STORE.findAll().stream()
-                            .filter(item -> java.sql.Date.valueOf(LocalDate.now()).compareTo(item.getDate()) == 0)
-                            .collect(Collectors.toList())
+                    CANDIDATE_STORE.find(candidate -> java.sql.Date.valueOf(LocalDate.now()).compareTo(candidate.getDate()) == 0)
             );
             request.getRequestDispatcher("index.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
         }
     }
 

@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServletCandidate extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(ServletCandidate.class);
@@ -19,14 +20,12 @@ public class ServletCandidate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            request.setAttribute("candidates",
-                    STORE.findAll().stream()
-                            .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
-                            .collect(Collectors.toList())
-            );
+            List<Candidate> list = new ArrayList<>(STORE.findAll());
+            list.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+            request.setAttribute("candidates", list);
             request.getRequestDispatcher("candidates.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
         }
     }
 

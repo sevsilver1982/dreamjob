@@ -21,11 +21,14 @@ public class ServletOfferEdit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setCharacterEncoding("UTF-8");
-            String reqId = request.getParameter("id");
-            if (reqId == null) {
+            String id = request.getParameter("id");
+            if (id == null) {
                 throw new RuntimeException("Invalid id");
             }
-            Offer offer = STORE.findById(Integer.parseInt(reqId));
+            Offer offer = STORE.findById(Integer.parseInt(id));
+            if (offer.isEmpty()) {
+                throw new RuntimeException("Invalid id");
+            }
             request.setAttribute("offer",
                     !offer.isEmpty() ? offer
                             : new Offer()
@@ -35,7 +38,8 @@ public class ServletOfferEdit extends HttpServlet {
             );
             request.getRequestDispatcher("offer_edit.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -43,14 +47,14 @@ public class ServletOfferEdit extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setCharacterEncoding("UTF-8");
-            String reqId = request.getParameter("id");
-            if (reqId == null) {
+            String id = request.getParameter("id");
+            if (id == null) {
                 throw new RuntimeException("Invalid id");
             }
             STORE.add(
                     new Offer()
                             .builder()
-                            .setId(Integer.parseInt(reqId))
+                            .setId(Integer.parseInt(id))
                             .setDate(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date")))
                             .setName(request.getParameter("name"))
                             .setAuthor(request.getParameter("author"))
@@ -59,7 +63,8 @@ public class ServletOfferEdit extends HttpServlet {
             );
             response.sendRedirect(request.getContextPath() + "/offers.do");
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

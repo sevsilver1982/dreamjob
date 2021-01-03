@@ -1,7 +1,6 @@
 package servlet;
 
 import model.Candidate;
-import model.Photo;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ServletCandidateEdit extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(ServletCandidateEdit.class);
@@ -31,11 +29,14 @@ public class ServletCandidateEdit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setCharacterEncoding("UTF-8");
-            String reqId = request.getParameter("id");
-            if (reqId == null) {
+            String id = request.getParameter("id");
+            if (id == null) {
                 throw new RuntimeException("Invalid id");
             }
-            Candidate candidate = CANDIDATE_STORE.findById(Integer.parseInt(reqId));
+            Candidate candidate = CANDIDATE_STORE.findById(Integer.parseInt(id));
+            if (candidate.isEmpty()) {
+                throw new RuntimeException("Invalid id");
+            }
             request.setAttribute("candidate",
                     !candidate.isEmpty() ? candidate
                             : new Candidate()
@@ -45,70 +46,71 @@ public class ServletCandidateEdit extends HttpServlet {
             );
             request.getRequestDispatcher("candidate_edit.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     private Candidate getCandidateFromRequest(Candidate candidate, List<FileItem> items) {
-        items.stream()
-                .filter(FileItem::isFormField)
-                .forEach(fileItem -> {
-                    try {
-                        String value = fileItem.getString("UTF-8");
-                        switch (fileItem.getFieldName()) {
-                            case "name":
-                                candidate.setName(value);
-                                break;
-                            case "description":
-                                candidate.setDescription(value);
-                                break;
-                            case "date":
-                                candidate.setDate(
-                                        new SimpleDateFormat("yyyy-MM-dd").parse(value)
-                                );
-                                break;
-                            case "city":
-                                candidate.setCity(
-                                        CitiesStoreDB.getInstance().findById(Integer.parseInt(value))
-                                );
-                                break;
-                            case "photoId":
-                                candidate.setPhotoId(value.equals("") ? 0 : Integer.parseInt(value));
-                                break;
-                            default:
-                                break;
-                        }
-                    } catch (Exception e) {
-                        LOGGER.debug(e);
+        for (FileItem fileItem : items) {
+            if (fileItem.isFormField()) {
+                try {
+                    String value = fileItem.getString("UTF-8");
+                    switch (fileItem.getFieldName()) {
+                        case "name":
+                            candidate.setName(value);
+                            break;
+                        case "description":
+                            candidate.setDescription(value);
+                            break;
+                        case "date":
+                            candidate.setDate(
+                                    new SimpleDateFormat("yyyy-MM-dd").parse(value)
+                            );
+                            break;
+                        case "city":
+                            candidate.setCity(
+                                    CitiesStoreDB.getInstance().findById(Integer.parseInt(value))
+                            );
+                            break;
+                        case "photoId":
+                            candidate.setPhotoId(value.equals("") ? 0 : Integer.parseInt(value));
+                            break;
+                        default:
+                            break;
                     }
-                });
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            }
+        }
         return candidate;
     }
 
     private byte[] getPhotoFromRequest(List<FileItem> items) {
-        AtomicReference<byte[]> bytes = new AtomicReference<>();
-        items.stream()
-                .filter(fileItem -> !fileItem.isFormField() && fileItem.getFieldName().equals("photo"))
-                .findFirst()
-                .ifPresent(fileItem -> {
-                    try {
-                        bytes.set(fileItem.getInputStream().readAllBytes());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-        return bytes.get();
+        byte[] bytes = null;
+        for (FileItem item : items) {
+            if (!item.isFormField() && item.getFieldName().equals("photo")) {
+                try {
+                    bytes = item.getInputStream().readAllBytes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        return bytes;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             request.setCharacterEncoding("UTF-8");
-            String reqId = request.getParameter("id");
-            if (reqId == null) {
+            String id = request.getParameter("id");
+            if (id == null) {
                 throw new RuntimeException("Invalid id");
             }
-            Candidate reqCandidate = CANDIDATE_STORE.findById(Integer.parseInt(reqId));
+            Candidate reqCandidate = CANDIDATE_STORE.findById(Integer.parseInt(id));
             if (reqCandidate.isEmpty()) {
                 throw new RuntimeException("Invalid id");
             }
@@ -136,7 +138,8 @@ public class ServletCandidateEdit extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/candidates.do");
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

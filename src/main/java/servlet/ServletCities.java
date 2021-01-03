@@ -29,7 +29,7 @@ public class ServletCities extends HttpServlet {
             );
             outputStream.flush();
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
         }
     }
 

@@ -26,12 +26,10 @@ public class ServletCandidatePhoto extends HttpServlet {
                     response.setContentType("image/png");
                     response.setHeader("Content-Disposition", String.format("attachment; filename=%s", photo.getId()));
                     response.getOutputStream().write(in.readAllBytes());
-                } catch (Exception e) {
-                    LOGGER.debug(e);
                 }
             }
         } catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.error(e);
         }
     }
 
