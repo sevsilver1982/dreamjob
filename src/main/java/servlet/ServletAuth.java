@@ -17,7 +17,7 @@ public class ServletAuth extends HttpServlet {
         try {
             response.sendRedirect(request.getContextPath() + "/login.do");
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 
@@ -37,7 +37,7 @@ public class ServletAuth extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 

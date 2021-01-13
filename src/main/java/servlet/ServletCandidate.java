@@ -25,7 +25,7 @@ public class ServletCandidate extends HttpServlet {
             request.setAttribute("candidates", list);
             request.getRequestDispatcher("candidates.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 

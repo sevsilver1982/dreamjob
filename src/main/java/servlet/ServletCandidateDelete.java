@@ -21,7 +21,7 @@ public class ServletCandidateDelete extends HttpServlet {
             STORE.delete(Integer.parseInt(request.getParameter("id")));
             response.sendRedirect(request.getContextPath() + "/candidates.do");
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 

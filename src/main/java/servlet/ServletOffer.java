@@ -21,7 +21,7 @@ public class ServletOffer extends HttpServlet {
             request.setAttribute("offers", STORE.findAll());
             request.getRequestDispatcher("offers.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 

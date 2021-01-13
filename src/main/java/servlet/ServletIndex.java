@@ -31,7 +31,7 @@ public class ServletIndex extends HttpServlet {
             );
             request.getRequestDispatcher("index.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 

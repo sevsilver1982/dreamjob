@@ -29,7 +29,7 @@ public class ServletCandidatePhoto extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
         }
     }
 

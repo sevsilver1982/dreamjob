@@ -46,7 +46,7 @@ public class ServletCandidateEdit extends HttpServlet {
             );
             request.getRequestDispatcher("candidate_edit.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -80,7 +80,7 @@ public class ServletCandidateEdit extends HttpServlet {
                             break;
                     }
                 } catch (Exception e) {
-                    LOGGER.error(e);
+                    LOGGER.error("Message", e);
                 }
             }
         }
@@ -138,7 +138,7 @@ public class ServletCandidateEdit extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/candidates.do");
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
             throw new RuntimeException(e.getMessage());
         }
     }

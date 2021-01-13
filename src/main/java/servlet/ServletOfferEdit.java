@@ -38,7 +38,7 @@ public class ServletOfferEdit extends HttpServlet {
             );
             request.getRequestDispatcher("offer_edit.jsp").forward(request, response);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -63,7 +63,7 @@ public class ServletOfferEdit extends HttpServlet {
             );
             response.sendRedirect(request.getContextPath() + "/offers.do");
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Message", e);
             throw new RuntimeException(e.getMessage());
         }
     }
